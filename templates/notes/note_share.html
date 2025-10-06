@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto my-8 bg-[#fdfaf0] p-8 md:p-12 rounded-lg shadow-2xl border-t-4 border-book-brown">
+    <h1 class="text-4xl font-bold text-book-brown mb-4 border-b-2 border-dashed border-gray-300 pb-4" style="font-family: 'Georgia', serif;">Share Note</h1>
+    <p class="text-lg text-gray-800 my-6">
+        Select users to share "<strong>{{ note.title }}</strong>" with.
+    </p>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.shared_with.id_for_label }}" class="block text-lg font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">Share with:</label>
+            <p class="text-sm text-gray-600 mb-2">Hold down "Control" (or "Command" on Mac) to select more than one user.</p>
+            {{ form.shared_with }}
+        </div>
+        
+        <div class="flex items-center justify-start gap-4 pt-6 border-t border-gray-200">
+            <button type="submit" class="bg-book-brown text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 shadow-lg">
+                Update Sharing
+            </button>
+            <a href="{% url 'notes:note_detail' note.pk %}" class="text-book-brown font-bold py-3 px-6 rounded-lg hover:bg-gray-200 transition duration-300">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div> 
+{% endblock %}

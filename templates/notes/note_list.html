@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='#8b4513' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .note-card {
+        transition: all 0.3s ease;
+        transform: rotate(-1deg);
+    }
+    .note-card:hover {
+        transform: scale(1.05) rotate(0deg);
+        z-index: 10;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .note-grid > a:nth-child(even) .note-card {
+        transform: rotate(1deg);
+    }
+    .note-grid > a:nth-child(3n) .note-card {
+        transform: rotate(-1.5deg);
+    }
+    .note-grid > a:nth-child(even):hover .note-card,
+    .note-grid > a:nth-child(3n):hover .note-card {
+        transform: scale(1.05) rotate(0deg);
+    }
+  .masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjust column width as needed */
+    grid-auto-rows: 10px; /* Base row height for spanning */
+    align-items: start; /* Align items to the start of their grid area */
+  }
+
+  .masonry-grid > a {
+    grid-row-end: span var(--row-span, 1); /* Default span, will be overridden by JS */
+  }
+</style>
+
+<div class="text-center mb-8 border-b-2 border-book-brown pb-4">
+    <h1 class="text-5xl font-bold text-book-brown" style="font-family: 'Georgia', serif;">My Notes</h1>
+</div>
+
+{% if my_notes %}
+    <div class="grid gap-4 masonry-grid note-grid">
+        {% for note in my_notes %}
+        <a href="{% url 'notes:note_detail' note.pk %}" class="block">
+            <div class="note-card bg-[#fdfaf0] p-6 rounded-lg shadow-lg {% if note.is_pinned %}border-2 border-yellow-400{% endif %}">
+                <div class="flex justify-between items-start">
+                    <h5 class="text-2xl font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">{{ note.title }}</h5>
+                    {% if note.is_pinned %}
+                        <span class="text-yellow-500 text-2xl transform rotate-12 -mt-2 -mr-2">📌</span>
+                    {% endif %}
+                </div>
+                <p class="text-gray-800 mb-4" style="font-family: 'Georgia', serif;">{{ note.content|truncatewords:20 }}</p>
+                <div class="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                    {% if note.media_file %}
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">📎 Media</span>
+                    {% endif %}
+                    {% if note.shared_with.count > 0 %}
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">👥 Shared</span>
+                    {% endif %}
+                </div>
+                <p class="text-gray-400 text-sm mt-4 text-right">{{ note.updated_at|date:"M d, Y" }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="bg-[#fdfaf0] text-center p-16 rounded-lg shadow-inner border-2 border-dashed border-gray-300">
+        <h4 class="text-3xl font-bold text-book-brown mb-3" style="font-family: 'Georgia', serif;">Your notebook is empty</h4>
+        <p class="text-gray-600 mb-6">Let's write your first note and bring your ideas to life.</p>
+        <a href="{% url 'notes:note_create' %}" class="bg-book-brown text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 inline-block shadow-lg">Create Note</a>
+    </div>
+{% endif %}
+
+<div class="flex justify-center mt-8">
+    <a href="{% url 'notes:note_create' %}" class="bg-book-brown text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 shadow-lg">+ New Note</a>
+</div>
+
+{% if shared_notes %}
+    <h2 class="text-4xl font-bold text-book-brown mt-16 mb-8 border-b-2 border-book-brown pb-4" style="font-family: 'Georgia', serif;">Shared With Me</h2>
+    <div class="grid gap-4 masonry-grid note-grid">
+        {% for note in shared_notes %}
+        <a href="{% url 'notes:note_detail' note.pk %}" class="block">
+            <div class="note-card bg-[#fdfaf0] p-6 rounded-lg shadow-lg">
+                <h5 class="text-2xl font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">{{ note.title }}</h5>
+                <p class="text-gray-800 mb-4" style="font-family: 'Georgia', serif;">{{ note.content|truncatewords:20 }}</p>
+                <p class="text-gray-500 text-sm">By {{ note.author.username }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+{% endif %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const grids = document.querySelectorAll('.masonry-grid');
+
+    grids.forEach(grid => {
+      const items = Array.from(grid.children);
+
+      function resizeMasonryItem(item) {
+        const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'));
+        const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+        const itemHeight = item.querySelector('div') ? item.querySelector('div').scrollHeight : item.scrollHeight; // Adjust if content is nested
+        const rowSpan = Math.ceil((itemHeight + rowGap) / (rowHeight + rowGap));
+        item.style.setProperty('--row-span', rowSpan);
+      }
+
+      function resizeAllMasonryItems() {
+        items.forEach(resizeMasonryItem);
+      }
+
+      resizeAllMasonryItems();
+      window.addEventListener('resize', resizeAllMasonryItems);
+    });
+  });
+</script>
+{% endblock %}

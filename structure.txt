@@ -1,0 +1,31 @@
+kitabu_project/
+├── kitabu_project/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── accounts/
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   └── urls.py
+├── notes/
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   └── urls.py
+├── payments/
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
+├── templates/
+│   ├── base.html
+│   ├── home.html
+│   ├── accounts/
+│   ├── notes/
+│   └── payments/
+├── static/
+├── media/
+├── manage.py
+├── .env
+└── requirements.txt

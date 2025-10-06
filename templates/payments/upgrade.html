@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Upgrade to Premium - Kitabu{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto my-8 bg-[#fdfaf0] p-8 md:p-12 rounded-lg shadow-2xl border-t-4 border-yellow-400">
+    <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-yellow-900 mb-2" style="font-family: 'Georgia', serif;">⭐ Go Premium</h1>
+        <h2 class="text-5xl md:text-6xl font-extrabold text-yellow-900 mb-2">Ksh 87</h2>
+        <p class="text-lg text-gray-600 mb-8">One-time payment for lifetime access.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 my-8 text-lg">
+        <div class="bg-white p-6 rounded-lg shadow-md border">
+            <h3 class="text-2xl font-bold text-book-brown mb-4">✨ Free</h3>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Unlimited text notes</li>
+                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Fast & simple interface</li>
+                <li class="flex items-center"><span class="text-red-500 mr-2">✖</span> No media uploads</li>
+                <li class="flex items-center"><span class="text-red-500 mr-2">✖</span> No note sharing</li>
+            </ul>
+        </div>
+        <div class="bg-yellow-50 p-6 rounded-lg shadow-xl border-2 border-yellow-400">
+            <h3 class="text-2xl font-bold text-yellow-900 mb-4">⭐ Premium</h3>
+            <ul class="space-y-2 text-gray-800">
+                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Everything in Free</li>
+                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Upload images & documents</li>
+                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Share notes with friends</li>
+                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Lifetime premium access</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mt-10 pt-8 border-t border-gray-200">
+        <form method="post" action="{% url 'payments:initiate' %}" class="max-w-md mx-auto">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="id_phone_number" class="block text-lg font-bold text-book-brown mb-2 text-center" style="font-family: 'Georgia', serif;">M-Pesa Phone Number</label>
+                <input type="text" name="phone_number" id="id_phone_number" class="w-full p-3 bg-white border border-gray-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 text-center text-xl"
+                       placeholder="254712345678" value="{{ user.phone_number|default:'' }}" required>
+                <p class="text-sm text-gray-500 mt-1 text-center">Format: 254XXXXXXXXX</p>
+            </div>
+            <button type="submit" class="w-full bg-yellow-400 text-yellow-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition duration-300 shadow-lg text-lg">
+                Pay Ksh 87 via M-Pesa
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

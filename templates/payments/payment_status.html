@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Status - Kitabu{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto my-8">
+    <div class="bg-[#fdfaf0] p-8 md:p-12 rounded-lg shadow-2xl text-center
+        {% if payment.status == 'completed' %}border-t-4 border-green-500
+        {% elif payment.status == 'failed' %}border-t-4 border-red-500
+        {% else %}border-t-4 border-blue-500{% endif %}">
+
+        {% if payment.status == 'completed' %}
+            <div class="flex justify-center mb-4">
+                <svg class="h-20 w-20 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-green-700" style="font-family: 'Georgia', serif;">Payment Successful!</h1>
+            <p class="text-xl text-gray-700 mt-2">You are now a ⭐ Premium user!</p>
+            <div class="mt-4 bg-green-50 text-green-800 p-3 rounded-lg inline-block">
+                <strong>M-Pesa Receipt:</strong> {{ payment.mpesa_receipt_number }}
+            </div>
+            <div class="mt-8">
+                <a href="{% url 'notes:note_create' %}" class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 shadow-lg">
+                    Create Your First Premium Note
+                </a>
+            </div>
+
+        {% elif payment.status == 'failed' %}
+            <div class="flex justify-center mb-4">
+                <svg class="h-20 w-20 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-red-700" style="font-family: 'Georgia', serif;">Payment Failed</h1>
+            <p class="text-xl text-gray-700 mt-2">Your payment could not be processed.</p>
+            <div class="mt-8">
+                <a href="{% url 'payments:upgrade' %}" class="bg-yellow-400 text-yellow-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition duration-300 shadow-lg">
+                    Try Again
+                </a>
+            </div>
+
+        {% else %} {# Pending #}
+            <div class="flex justify-center mb-6">
+                <svg class="animate-spin h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-book-brown" style="font-family: 'Georgia', serif;">Processing Payment...</h1>
+            <p class="text-lg text-gray-600 mt-2">Please wait while we confirm your payment.</p>
+            <p class="text-sm text-gray-500 mt-4">This page will auto-refresh shortly.</p>
+        {% endif %}
+
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">Payment ID: {{ payment.id }}</p>
+            <a href="{% url 'notes:note_list' %}" class="text-book-brown hover:underline font-semibold mt-2 inline-block">Return to Notes</a>
+        </div>
+    </div>
+</div>
+
+{% if payment.status == 'pending' %}
+<script>
+    // Auto-refresh every 5 seconds while payment is pending
+    setTimeout(function() {
+        location.reload();
+    }, 5000);
+</script>
+{% endif %}
+{% endblock %}

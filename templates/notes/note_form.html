@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto my-8 bg-[#fdfaf0] p-8 md:p-12 rounded-lg shadow-2xl border-t-4 border-book-brown">
+    <h1 class="text-4xl md:text-5xl font-bold text-book-brown mb-8 border-b-2 border-dashed border-gray-300 pb-6" style="font-family: 'Georgia', serif;">{{ action }} Note</h1>
+    
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+            <label for="{{ form.title.id_for_label }}" class="block text-lg font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">Title</label>
+            {{ form.title }}
+        </div>
+
+        <div>
+            <label for="{{ form.content.id_for_label }}" class="block text-lg font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">Content</label>
+            {{ form.content }}
+        </div>
+
+        <div>
+            <label for="{{ form.media_file.id_for_label }}" class="block text-lg font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">Attach File</label>
+            {{ form.media_file }}
+            {% if not user.is_premium %}
+                <div class="mt-3 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-r-lg">
+                    <p class="font-bold">💡 Premium Feature</p>
+                    <p>Upgrade to upload images and documents! <a href="{% url 'payments:upgrade' %}" class="font-bold underline hover:text-yellow-900">Upgrade for Ksh 87</a>.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="flex items-center">
+            {{ form.is_pinned }}
+            <label for="{{ form.is_pinned.id_for_label }}" class="ml-2 text-lg font-bold text-book-brown" style="font-family: 'Georgia', serif;">Pin this note?</label>
+        </div>
+
+        <div class="flex items-center justify-start gap-4 pt-6 border-t border-gray-200">
+            <button type="submit" class="bg-book-brown text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 shadow-lg">
+                Save Note
+            </button>
+            <a href="{{ request.META.HTTP_REFERER|default_if_none:"{% url 'notes:note_list' %}" }}" class="text-book-brown font-bold py-3 px-6 rounded-lg hover:bg-gray-200 transition duration-300">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

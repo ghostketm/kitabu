@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Pending - Kitabu{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto my-8 bg-[#fdfaf0] p-8 md:p-12 rounded-lg shadow-2xl border-t-4 border-blue-500">
+    <div class="text-center">
+        <div class="flex justify-center mb-6">
+            <svg class="animate-spin h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-book-brown mb-3" style="font-family: 'Georgia', serif;">Payment Request Sent!</h1>
+        <p class="text-xl text-gray-700">Check your phone (<strong class="text-book-brown">{{ phone_number }}</strong>).</p>
+        <p class="text-lg text-gray-600 mt-1">Enter your M-Pesa PIN to complete the payment.</p>
+
+        <div class="mt-6 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg">
+            <p class="font-bold">Payment ID: <span class="font-mono">{{ payment.id }}</span></p>
+            <p class="text-sm">Keep this for reference if you need support.</p>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+            <a href="{% url 'payments:status' payment.id %}" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 shadow-lg">
+                Check Payment Status
+            </a>
+            <a href="{% url 'notes:note_list' %}" class="w-full sm:w-auto text-book-brown font-bold py-3 px-6 rounded-lg hover:bg-gray-200 transition duration-300">
+                Return to Notes
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-redirect to check status after 15 seconds
+    setTimeout(function() {
+        window.location.href = "{% url 'payments:status' payment.id %}";
+    }, 15000);  // Check after 15 seconds
+</script>
+{% endblock %}

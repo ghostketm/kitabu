@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Kitabu{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto my-8 bg-[#fdfaf0] p-8 md:p-12 rounded-lg shadow-2xl border-t-4 border-book-brown">
+    <h1 class="text-4xl font-bold text-book-brown mb-8 text-center" style="font-family: 'Georgia', serif;">Create Your Account</h1>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-lg font-bold text-book-brown mb-2" style="font-family: 'Georgia', serif;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <p class="text-sm text-gray-500 mt-1">{{ field.help_text|safe }}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p class="text-red-600 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="w-full bg-book-brown text-white font-bold py-3 px-6 rounded-lg hover:bg-opacity-90 transition duration-300 shadow-lg">Register</button>
+    </form>
+    <p class="text-center mt-6 text-gray-600">Already have an account? <a href="{% url 'accounts:login' %}" class="font-bold text-book-brown hover:underline">Login here</a>.</p>
+</div>
+{% endblock %}

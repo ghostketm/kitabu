@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kitabu - Notes App{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'book-tan': '#fdf6e3',
+                        'book-brown': '#8b4513',
+                        'book-nav': '#d2b48c',
+                        'book-footer': '#c2a57c',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-book-tan text-book-brown flex flex-col min-h-screen">
+
+    {% include 'nav.html' %}
+
+    <!-- Messages -->
+    <div class="container mx-auto px-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!-- Navigation -->
+<nav class="bg-book-nav shadow-md">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <!-- Left: Logo and Notes -->
+            <div class="flex items-center space-x-4">
+                <a class="text-3xl font-extrabold text-book-brown" href="{% url 'home' %}">
+                    📝 Kitabu
+                </a>
+                {% if user.is_authenticated %}
+                    <a class="hidden md:block text-book-brown hover:font-bold transition-all duration-300" href="{% url 'notes:note_list' %}">My Notes</a>
+                {% endif %}
+            </div>
+
+            <!-- Middle: Payments -->
+            <div class="hidden md:flex justify-center">
+                {% if user.is_authenticated and not user.is_premium %}
+                    <a class="text-yellow-600 font-bold hover:text-yellow-700 transition-colors duration-300" href="{% url 'payments:upgrade' %}">
+                        Upgrade to Premium
+                    </a>
+                {% elif user.is_premium %}
+                    <span class="text-yellow-600 font-bold">⭐ Premium Member</span>
+                {% endif %}
+            </div>
+
+            <!-- Right: Auth links -->
+            <div class="hidden md:flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <a class="text-book-brown hover:font-bold transition-all duration-300" href="{% url 'accounts:profile' %}">Profile</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="text-book-brown hover:font-bold transition-all duration-300">Logout</button>
+                    </form>
+                {% else %}
+                    <a class="text-book-brown hover:font-bold transition-all duration-300" href="{% url 'accounts:login' %}">Login</a>
+                    <a class="bg-book-brown text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition duration-300" href="{% url 'accounts:register' %}">Register</a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center">
+                <button class="text-book-brown" id="mobile-menu-button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {% if user.is_authenticated %}
+                <a class="block text-book-brown hover:font-bold" href="{% url 'notes:note_list' %}">My Notes</a>
+                <a class="block text-book-brown hover:font-bold" href="{% url 'notes:note_create' %}">Create Note</a>
+                {% if user.is_premium %}
+                    <span class="block text-yellow-600 font-bold">⭐ Premium</span>
+                {% else %}
+                    <a class="block text-yellow-600 font-bold hover:text-yellow-700" href="{% url 'payments:upgrade' %}">
+                        Upgrade - Ksh 87
+                    </a>
+                {% endif %}
+                <a class="block text-book-brown hover:font-bold" href="{% url 'accounts:profile' %}">Profile</a>
+                <form method="post" action="{% url 'logout' %} ">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full text-left block text-book-brown hover:font-bold">Logout</button>
+                </form>
+            {% else %}
+                <a class="block text-book-brown hover:font-bold" href="{% url 'accounts:login' %}">Login</a>
+                <a class="block text-book-brown hover:font-bold" href="{% url 'accounts:register' %}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.getElementById('mobile-menu-button').onclick = function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    };
+</script>
