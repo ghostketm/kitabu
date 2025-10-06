@@ -1,5 +1,5 @@
 [build]
-command = "python manage.py collectstatic --noinput && python manage.py migrate"
+build-command = "python manage.py collectstatic --noinput && python manage.py migrate"
 Starting Container
 [2025-10-06 16:58:37 +0000] [1] [INFO] Starting gunicorn 23.0.0
 [2025-10-06 16:58:37 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
